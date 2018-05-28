@@ -1,0 +1,25 @@
+<apex:page controller="ProductsListController">
+  <apex:slds />
+    <div class="slds-page-header" role="banner">
+    	<h1 class="slds-page-header_title slds-text-align_center slds-align_middle slds-text-heading_medium">
+        	{!selectedProduct.Name}
+        </h1>
+    </div>
+  <div class="slds-grid">
+      <div class="slds-col slds-size_1-of-2">
+          <apex:image value="{!selectedProduct.Image_URL__c }" width="450" height="450" />
+      </div>
+      <div class="slds-col slds-m-top_large slds-m-right_large">
+          <apex:outputText >AMOUNT:</apex:outputText><br />
+          <apex:outputText value="{!selectedProduct.Units_Available__c}" /><br /><br />
+          <apex:outputText >DESCRIPTION:</apex:outputText><br />
+         <apex:outputText value="{!selectedProduct.Product_Description__c}" />
+      </div>
+    </div>
+    <apex:form >
+    <div class="slds-docked-form-footer">
+        <apex:commandLink value="Cancel" styleClass="slds-button slds-button--neutral" action="{!gotoPreviousPage}"/>
+        <apex:commandLink styleClass="slds-button slds-button_brand" action="{!gotoBuyProduct}" value="Buy" />
+    </div>
+    </apex:form>
+</apex:page>

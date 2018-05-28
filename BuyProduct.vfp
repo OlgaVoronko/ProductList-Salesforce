@@ -1,0 +1,64 @@
+<apex:page controller="ProductsListController">
+  <apex:slds />
+    <div class="slds-page-header slds-grid" role="banner">
+        <div class="slds-col slds-size_1-of-2 slds-text-align_right"><h1 class="slds-col slds-size_1-of-2 slds-page-header_title slds-align_middle slds-text-heading_medium">
+        	Contact Information
+            </h1></div>
+        <div class="slds-col slds-size_1-of-2 slds-text-align_left"><h1 class="slds-col slds-size_1-of-2 slds-page-header_title slds-align_middle slds-text-heading_medium">
+        	Product Information
+            </h1></div>
+    </div>
+    <apex:form >
+  <div class="slds-grid slds-align--absolute-center" style="height: 30em;">
+      <div class="slds-col slds-size_1-of-2 slds-align--absolute-center">
+        <div class="slds-form-element">
+  			<div class="slds-form-element__control slds-input-has-fixed-addon slds-p-bottom_small slds-p-left_x-large">
+    			<span class="slds-form-element__addon slds-p-right_x-small" id="fixed-text-addon-pre">E-mail</span>
+                <apex:inputText styleClass="slds-input" style="width: 17em;" value="{!email}" id="EmailId"/>
+  			</div>
+            <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-bottom_small slds-p-left_small">
+    			<span class="slds-form-element__addon" id="fixed-text-addon-pre">First Name</span>
+                <apex:inputText styleClass="slds-input" style="width: 17em;" value="{!firstName}" id="firstNameId"/>
+  			</div>
+            <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-bottom_small">
+    			<span class="slds-form-element__addon" id="fixed-text-addon-pre">Last Name
+                	<abbr class="slds-required" title="required">*</abbr>
+                </span>
+                <apex:inputText styleClass="slds-input" style="width: 17em;" value="{!lastName}" id="lastNameId"/>
+  			</div>
+		</div>
+      </div>
+      <div class="slds-col slds-size_1-of-2">
+        <div class="slds-form-element">
+  			<div class="slds-form-element__control slds-input-has-fixed-addon">
+    			<span class="slds-form-element__addon slds-m-left_xx-small" id="fixed-text-addon-pre">Product Name</span>
+                <span class="slds-form-element__static">{!productToBuy.Name}</span>
+  			</div>
+            <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-left_x-large">
+    			<span class="slds-form-element__addon slds-m-left_large slds-p-bottom_x-small" id="fixed-text-addon-pre">Cost</span>
+                <span class="slds-form-element__static">{!productToBuy.Unit_Price__c}</span>
+                <span class="slds-form-element__addon slds-p-bottom_x-small" id="fixed-text-addon-pre">$</span>
+  			</div>
+            <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-bottom_small slds-p-left_small">
+    			<span class="slds-form-element__addon" id="fixed-text-addon-pre">Unit Count</span>
+                <apex:inputText styleClass="slds-input" style="width: 17em;" value="{!unitCount}" id="unitCountId">
+                    <apex:actionSupport event="onchange"
+                                        action="{!changeCount}"
+                                      	reRender="totalAmountId"/>
+                </apex:inputText>
+  			</div>
+            <div class="slds-form-element__control slds-input-has-fixed-addon slds-p-bottom_small" id="totalAmountId">
+    			<span class="slds-form-element__addon slds-p_small slds-m-bottom_x-small" id="fixed-text-addon-pre">Total Amount</span>
+                <apex:outputText id="totalAmountId" value="{!totalAmount}"/>
+                <span class="slds-form-element__addon slds-m-bottom_x-small" id="fixed-text-addon-post">$</span>
+  			</div>
+		</div>
+      </div>
+    </div>
+	<apex:pageMessages />
+    <div class="slds-docked-form-footer">
+        <apex:commandLink value="Cancel" styleClass="slds-button slds-button--neutral" action="{!gotoPreviousPage}" />
+        <apex:commandButton value="Buy" styleClass="slds-button slds-button--brand" action="{!tryToBuy}"/>
+    </div>
+    </apex:form>
+</apex:page>

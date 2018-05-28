@@ -1,0 +1,94 @@
+public class ProductsListController {
+   	public final static Integer MAX_LENGTH = 97;
+   // public List<Contact> contacts {get; set;}
+    public string productId {get; set;}
+    public Product_Table__c selectedProduct {get; set;}
+    public Product_Table__c productToBuy {get; set;}
+    public Integer unitCount {get; set;}
+    public Decimal totalAmount {get; set;}
+    public String firstName {get; set;}
+    public String lastName {get; set;}
+    public String email {get; set;}
+    public List<Contact> enteredContact {get; set;}
+    public String pageName = '';
+
+    public ProductsListController() {
+        unitCount = 0;
+        totalAmount = 0;
+        firstName = '';
+        lastName = '';
+        email = '';
+    }
+
+	public List<Product_Table__c> getProducts() {
+    List<Product_Table__c> results = Database.query(
+        'SELECT Id, Image_URL__c, Name, Product_Description__c, Unit_Price__c ' +
+        'FROM Product_Table__c ' +
+        'ORDER BY Name ASC ' +
+        'LIMIT 100 '
+    );
+        for (Product_Table__c products : results) {
+            if (products.Product_Description__c != null) {
+                Integer Intlength = products.Product_Description__c.length();
+                if (Intlength > 99 ) {
+                    products.Product_Description__c = products.Product_Description__c.substring(0, MAX_LENGTH) + '...';
+                }
+            }
+        }
+    return results;
+	}
+
+    public PageReference gotoProductPage() {
+        system.debug('productId ' + productId);
+
+        selectedProduct = [select Id, Image_URL__c, Name, Product_Description__c, Unit_Price__c, Units_Available__c from Product_Table__c where Id = :productId];
+        system.debug('selectedProduct ' + selectedProduct);
+        pageName = ApexPages.currentPage().getUrl().substringAfter('apex/');
+    	return new PageReference('/apex/ProductPage');
+    }
+
+    public Pagereference gotoBuyProduct() {
+        productToBuy = [select Id, Image_URL__c, Name, Product_Description__c, Unit_Price__c, Units_Available__c from Product_Table__c where Id = :productId];
+    	pageName = ApexPages.currentPage().getUrl().substringAfter('apex/');
+        return new PageReference('/apex/BuyProduct');
+    }
+
+    public PageReference gotoPreviousPage() {
+        return new PageReference('/apex/' + pageName);
+    }
+
+    public void changeCount() {
+      totalAmount = unitCount * productToBuy.Unit_Price__c;
+    }
+
+    public PageReference tryToBuy() {
+        if (unitCount > productToBuy.Units_Available__c) {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Please check number of available stuff'));
+            return null;
+        } else {
+            List<Contact> enteredContact = [SELECT Email, FirstName, LastName FROM Contact WHERE Email = :email LIMIT 1];
+            Contact newContact;
+            if (enteredContact.isEmpty()) {
+                newContact = new Contact();
+                newContact.Email = email;
+                newContact.FirstName = firstName;
+                newContact.LastName = lastName;
+                insert newContact;
+            } else {
+                newContact = enteredContact[0];
+                newContact.FirstName = firstName;
+                newContact.LastName = lastName;
+                update newContact;
+            }
+            Order_Table__c newOrder = new Order_Table__c();
+            newOrder.Product__c = productId;
+            newOrder.Units__c = unitCount;
+            newOrder.Order_Amount__c = totalAmount;
+            newOrder.Contact__c = newContact.Id;
+            productToBuy.Units_Available__c -= unitCount;
+            update productToBuy;
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO,'Congratulations, your order is ready'));
+            return null;
+        }
+    }
+}

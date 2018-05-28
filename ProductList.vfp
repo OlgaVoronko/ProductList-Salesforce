@@ -1,0 +1,46 @@
+<apex:page Controller="ProductsListController">
+    <apex:slds />
+    <html>
+        <body>
+            <table class="slds-table slds-table_bordered">
+                <tr class="slds-text-title_caps">
+                    <th>IMAGE</th>
+                    <th>NAME</th>
+                    <th>DESCRIPTION</th>
+                    <th>COST</th>
+                    <th></th>
+                </tr>
+                <apex:repeat value="{!products}" var="prod">
+                    <tr id="{!prod.Id}">
+                        <td>
+                            <apex:image value="{!prod.Image_URL__c }" width="200" height="200" />
+                        </td>
+                        <td><apex:form >
+                            <apex:commandLink value="{!prod.Name}" action="{!gotoProductPage}">
+                            	<apex:param name="productToShow"
+                                            value="{!prod.Id}"
+                                            assignTo="{!productId}"/>
+                            </apex:commandLink></apex:form>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!prod.Product_Description__c}"/>
+                            <apex:outputLink value="#">More</apex:outputLink>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!prod.Unit_Price__c}"/>
+                        </td>
+                        <td>
+                            <apex:form >
+                                <apex:commandLink styleClass="slds-button slds-button_brand" action="{!gotoBuyProduct}" value="Buy">
+                            	<apex:param name="productToBuy"
+                                            value="{!prod.Id}"
+                                            assignTo="{!productId}"/>
+                                </apex:commandLink>
+                            </apex:form>
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </body>
+    </html>
+    </apex:page>
